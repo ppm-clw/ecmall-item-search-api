@@ -3,7 +3,6 @@
 import json,urllib.request, urllib.parse,configparser
 from flask import Flask, request, jsonify
 
-
 app = Flask(__name__)
 #日本語文字化け対応
 app.config['JSON_AS_ASCII'] = False
@@ -15,7 +14,7 @@ def index():
     return 'Hello World'
 
 # GET通信
-# 固定のJSONファイルを返却する
+# 固定のJSONファイルを返却するケース
 @app.route('/mall-item/api', methods=['GET'])
 def get_item_controller():
     # get request data form dialogflow post body
@@ -28,7 +27,6 @@ def get_item_controller():
     # make response json and return
     return makeWebFookResult(res)
 
-
 # POST
 # 外部通信をしてデータを取得後に返却をする
 @app.route('/mall-item/api', methods=['POST'])
@@ -39,17 +37,19 @@ def post_item_controller():
     print("Request:")
     print(json.dumps(req, indent=4))
 
-    # make url parameter
+    # GET通信時のパラメータ作成
+    # 楽天IDを外部ファイルから取得する
     p = urllib.parse.urlencode(set_param())
     url = "https://app.rakuten.co.jp/services/api/IchibaItem/Ranking/20170628?" + p
     print("URL:")
     print(url)
+    # GET通信
     with urllib.request.urlopen(url) as res:
         html = res.read().decode("utf-8")
 
-    #jsonデータ取得
+    #jsonデータ取得d
     json_data = json.loads(html)
-    print("Data Size : ")
+    print("Item Data Size : ")
     print(len(json_data['Items']))
     # ランキング1番の商品のみ取り出す
     for item in json_data['Items']:
@@ -62,11 +62,11 @@ def post_item_controller():
     # 会話文を含む返却用のJSONを作成
     res = create_res_json(speech, speech)
     # make response json and return
-    return makeWebFookResult(res)
+    return make_webfook_result(res)
 
 
-# 外部通信時のリクエストパラメータ
-# ※固定のパラメータは外部ファイルから読み込み
+# 外部通信時のリクエストパラメータ取得
+# ※固定のURLパラメータは外部ファイルから読み込み
 def set_param():
     inifile = configparser.ConfigParser()
     inifile.read('./config.ini', 'UTF-8')
@@ -93,7 +93,7 @@ def read_model():
         return None
 
 # DialogFlowへの返却
-def makeWebFookResult(data):
+def make_webfook_result(data):
     return jsonify(data)
 
 # Main
