@@ -24,6 +24,11 @@ app_id : xxxxxxxx ←楽天アプリID
 
 `# python api.py`
 
-### GETのテスト
-ブラウザから以下にアクセスをして商品情報のJSONが表示されれば成功.
+### API動作確認
+ブラウザから以下にアクセスをして商品情報のJSONが表示されれば成功.  
 `http://localhost:5000/mall-item/api`
+
+### 楽天商品ランキングAPI
+
+https://webservice.rakuten.co.jp/api/ichibaitemranking/  
+
